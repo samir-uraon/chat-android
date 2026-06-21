@@ -34,32 +34,23 @@ jobs:
         run: java -version
 
       - name: Sync Capacitor
-        run: |
-          npx cap sync android
+        run: npx cap sync android
 
       - name: Build Release APK
+        working-directory: android
         run: |
-          cd android
           chmod +x gradlew
           ./gradlew clean
           ./gradlew assembleRelease --stacktrace
 
-      - name: List build outputs
-        if: always()
+      - name: Verify APK
         run: |
-          echo "Current directory:"
-          pwd
-
-          echo "Android folder:"
-          ls -R android || true
-
-          echo "Searching for APKs..."
-          find . -name "*.apk" || true
+          echo "Searching for APK..."
+          find . -name "*.apk"
 
       - name: Upload APK
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: |
-            android/app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
