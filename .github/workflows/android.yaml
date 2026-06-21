@@ -25,6 +25,12 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      # 👇 Add this step
+      - name: Create assets folders
+        run: |
+          mkdir -p android/app/src/main/assets/public
+
+      # 👇 Then sync
       - name: Sync Capacitor
         run: npx cap sync android
 
@@ -38,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: chat-app-apk
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: android/app/build/outputs/apk/release/*.apk
