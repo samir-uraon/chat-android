@@ -10,6 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create .env.local
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env.local
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,12 +29,10 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      # 👇 Add this step
       - name: Create assets folders
         run: |
           mkdir -p android/app/src/main/assets/public
 
-      # 👇 Then sync
       - name: Sync Capacitor
         run: npx cap sync android
 
@@ -40,8 +42,12 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease
 
+      - name: Find APK
+        run: |
+          find app/build/outputs -name "*.apk"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-        name: app-release
+          name: app-release
           path: android/app/build/outputs/apk/release/app-release.apk
