@@ -33,6 +33,10 @@ jobs:
       - name: Verify Java
         run: java -version
 
+      - name: Create assets folders 
+        run: | 
+          mkdir -p android/app/src/main/assets/public
+
       - name: Sync Capacitor
         run: npx cap sync android
 
