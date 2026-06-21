@@ -8,7 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Create .env.local
         run: |
@@ -29,25 +30,36 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Create assets folders
-        run: |
-          mkdir -p android/app/src/main/assets/public
+      - name: Verify Java
+        run: java -version
 
       - name: Sync Capacitor
-        run: npx cap sync android
+        run: |
+          npx cap sync android
 
-      - name: Build APK
+      - name: Build Release APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleRelease
+          ./gradlew clean
+          ./gradlew assembleRelease --stacktrace
 
-      - name: Find APK
+      - name: List build outputs
+        if: always()
         run: |
-          find app/build/outputs -name "*.apk"
+          echo "Current directory:"
+          pwd
+
+          echo "Android folder:"
+          ls -R android || true
+
+          echo "Searching for APKs..."
+          find . -name "*.apk" || true
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: |
+            android/app/build/outputs/apk/release/*.apk
