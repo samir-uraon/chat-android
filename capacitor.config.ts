@@ -1,12 +1,14 @@
-import type { CapacitorConfig } from "@capacitor/cli";
+import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "com.samir.chatapp",
-  appName: "chat-app",
+  appId: 'com.samir.chatapp',
+  appName: 'Chat App',
+  webDir: 'public',
   server: {
-    url: "https://chat-app-samir.vercel.app",
+    url: 'https://chat-app-samir.vercel.app',
     cleartext: false,
-  },
+    androidScheme: 'https'
+  }
 };
 
 export default config;
